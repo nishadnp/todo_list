@@ -11,7 +11,8 @@ function renderProjects() {
     
     // Clear and render all in one swoop
     projectListDisplay.innerHTML = projectList
-    .map(project => `<li data-id="${project.id}">${project.name}</li>`)
+    .map(project => `<li data-id="${project.id}">${project.name} 
+        <button class="delete-project-btn" data-id="${project.id}">X</button></li>`)
     .join(""); // join to make a single string
 }
 
@@ -20,9 +21,24 @@ function addProject(projectName) {
     renderProjects();
 }
 
+function deleteProject(projectID) {
+    removeProject(projectID);
+    renderProjects();
+}
+
+
 const addProjectBtn = document.getElementById("add-project-btn");
 
+// Event listener for adding a project
 addProjectBtn.addEventListener("click", () => {
     addProject(prompt("Enter project name:"));
     console.log(projectList);
+});
+  
+// Event delegation for deleting a project
+document.getElementById("projects").addEventListener("click", e => {
+    
+    if (e.target.classList.contains("delete-project-btn")) {
+        deleteProject(e.target.getAttribute("data-id"));
+    }
 });

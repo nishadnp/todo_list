@@ -55,3 +55,5 @@ function removeTask(projectID, taskID) {
         }
     }
 }
+
+export { projectList, createProject, removeProject, createTask, removeTask };

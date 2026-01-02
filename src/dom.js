@@ -31,7 +31,10 @@ const addProjectBtn = document.getElementById("add-project-btn");
 
 // Event listener for adding a project
 addProjectBtn.addEventListener("click", () => {
-    addProject(prompt("Enter project name:"));
+    const projectNameInput = document.querySelector("#new-project input")
+    const projectName = projectNameInput.value.trim();
+    addProject(projectName);
+    projectNameInput.value = ""; // Clear input field after adding
     console.log(projectList);
 });
   

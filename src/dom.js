@@ -26,6 +26,27 @@ function deleteProject(projectID) {
     renderProjects();
 }
 
+function renderSelectedProject(projectID) {
+    
+    const project = projectList.find(proj => proj.id === projectID);    
+
+    if (project) {
+
+        const mainContent = document.getElementById("main-content");
+        
+        mainContent.innerHTML = ""; // Clear previous content
+        const projectHeader = document.createElement("h2");
+        projectHeader.textContent = project.name;
+        mainContent.appendChild(projectHeader);
+
+        const addTaskBtn = document.createElement("button");
+        addTaskBtn.textContent = "Add Task";
+        addTaskBtn.id = "add-task-btn";
+        mainContent.appendChild(addTaskBtn);
+        // Further task rendering logic would go here
+
+    }
+}
 
 const addProjectBtn = document.getElementById("add-project-btn");
 
@@ -38,10 +59,15 @@ addProjectBtn.addEventListener("click", () => {
     console.log(projectList);
 });
   
-// Event delegation for deleting a project
+// Event delegation for deleting a project and selecting a project
 document.getElementById("projects").addEventListener("click", e => {
     
     if (e.target.classList.contains("delete-project-btn")) {
         deleteProject(e.target.getAttribute("data-id"));
+        return; // Exit to avoid rendering selected project
+    }
+
+    if (e.target.dataset.id) {
+        renderSelectedProject(e.target.dataset.id);
     }
 });

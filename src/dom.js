@@ -83,3 +83,18 @@ document.getElementById("projects").addEventListener("click", e => {
         renderSelectedProject(e.target.dataset.id);
     }
 });
+
+// Event delegation for adding and deleting tasks within the selected project
+document.getElementById("main-content").addEventListener("click", e => {
+    if (e.target.id === "add-task-btn") {
+        // Logic to add a new task would go here
+        console.log("Add Task button clicked");
+        return;
+    }
+
+    if (e.target.classList.contains("delete-task-btn")) {
+        const projectID = e.target.getAttribute("data-project-id");
+        const taskID = e.target.getAttribute("data-task-id");
+        deleteTaskFromProject(projectID, taskID);
+    }
+});

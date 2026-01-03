@@ -11,7 +11,8 @@ class Project {
 
 // Task class to represent individual tasks within a project
 class Task {
-    constructor(title, description, dueDate, priority) {
+    constructor(projectID, title, description, dueDate, priority) {
+        this.projectID = projectID;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -42,7 +43,7 @@ function removeProject(projectID) {
 function createTask(projectID, title, description, dueDate, priority) {
     const project = projectList.find(proj => proj.id === projectID);
     if (project) {
-        project.taskList.push(new Task(title, description, dueDate, priority));
+        project.taskList.push(new Task(projectID, title, description, dueDate, priority));
     }
 }
 

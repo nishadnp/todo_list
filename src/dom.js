@@ -26,6 +26,18 @@ function deleteProject(projectID) {
     renderProjects();
 }
 
+function addTaskToProject(projectID, title, description, dueDate, priority) {
+    createTask(projectID, title, description, dueDate, priority);
+    renderSelectedProject(projectID);
+}
+
+function deleteTaskFromProject(projectID, taskID) {
+    removeTask(projectID, taskID);
+    renderSelectedProject(projectID);
+}
+
+// Function to render the selected project's tasks
+
 function renderSelectedProject(projectID) {
     
     const project = projectList.find(proj => proj.id === projectID);    

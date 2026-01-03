@@ -58,6 +58,7 @@ function renderSelectedProject(projectID) {
         // Further task rendering logic would go here
 
     }
+    activeProjectID = projectID;
 }
 
 const addProjectBtn = document.getElementById("add-project-btn");
@@ -84,11 +85,13 @@ document.getElementById("projects").addEventListener("click", e => {
     }
 });
 
+const taskDialog = document.getElementById("task-modal");
+
 // Event delegation for adding and deleting tasks within the selected project
 document.getElementById("main-content").addEventListener("click", e => {
+
     if (e.target.id === "add-task-btn") {
-        // Logic to add a new task would go here
-        console.log("Add Task button clicked");
+        taskDialog.showModal();
         return;
     }
 
@@ -96,5 +99,44 @@ document.getElementById("main-content").addEventListener("click", e => {
         const projectID = e.target.getAttribute("data-project-id");
         const taskID = e.target.getAttribute("data-task-id");
         deleteTaskFromProject(projectID, taskID);
+        return;
     }
+
 });
+
+// Event listener for task form submission
+taskDialog.addEventListener("click", e => {
+
+    const taskForm = document.querySelector("#task-modal form");
+
+    if (e.target.id === "close-modal-btn") {
+        taskForm.reset();
+        taskDialog.close();
+        return;
+    }
+
+    if (e.target.id === "save-task-btn") {
+        e.preventDefault();
+
+        if (!taskForm.checkValidity()) {
+            taskForm.reportValidity();
+            return;
+        }
+
+        const title = taskForm.elements["task-title"].value;
+        const description = taskForm.elements["task-desc"].value;
+        const dueDate = taskForm.elements["task-due-date"].value;
+        const priority = taskForm.elements["task-priority"].value;
+
+        addTaskToProject(activeProjectID, title, description, dueDate, priority);
+
+        taskForm.reset();
+        taskDialog.close();
+    }
+
+
+    
+});
+
+// Variable to keep track of the currently active project
+let activeProjectID = null;

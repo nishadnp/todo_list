@@ -20,6 +20,33 @@
             </ul>
         </nav>
     </aside>
+    <dialog id="task-modal">
+        <form>
+            <h3 id="modal-title">Add New Task</h3>
+            <label>
+                Title:
+                <input type="text" id="task-title" required>
+            </label>
+            <label>
+                Description:
+                <textarea id="task-desc"></textarea>
+            </label>
+            <label>
+                Due Date:
+                <input type="date" id="task-due-date">
+            </label>
+            <label>
+                Priority:
+                <select id="task-priority">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </label>
+            <button type="submit" id="save-task-btn">Save Task</button>
+            <button type="button" id="close-modal-btn">Cancel</button>
+        </form>
+    </dialog>
     <main id="main-content">
         <!-- Main content will be dynamically added here -->
     </main>

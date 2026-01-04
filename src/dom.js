@@ -9,11 +9,24 @@ function renderProjects() {
     // Get the project list container
     const projectListDisplay = document.querySelector("#projects > ul");
     
-    // Clear and render all in one swoop
-    projectListDisplay.innerHTML = projectList
-    .map(project => `<li data-id="${project.id}">${project.name} 
-        <button class="delete-project-btn" data-id="${project.id}">X</button></li>`)
-    .join(""); // join to make a single string
+    projectListDisplay.innerHTML = ""; // Clear existing list
+
+    // List each project in the project list
+    projectList.forEach(project => {
+        const projectItem = document.createElement("li");
+        projectItem.textContent = project.name;
+        projectItem.setAttribute("data-id", project.id);
+        projectItem.classList.add("project-item");
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.type = "button";
+        deleteBtn.classList.add("delete-project-btn");
+        deleteBtn.setAttribute("data-id", project.id);
+
+        projectItem.appendChild(deleteBtn);
+        projectListDisplay.appendChild(projectItem);
+    });
 }
 
 function addProject(projectName) {

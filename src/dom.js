@@ -37,7 +37,6 @@ function deleteTaskFromProject(projectID, taskID) {
 }
 
 // Function to render the selected project's tasks
-
 function renderSelectedProject(projectID) {
     
     const project = projectList.find(proj => proj.id === projectID);    
@@ -55,10 +54,48 @@ function renderSelectedProject(projectID) {
         addTaskBtn.textContent = "Add Task";
         addTaskBtn.id = "add-task-btn";
         mainContent.appendChild(addTaskBtn);
-        // Further task rendering logic would go here
 
+        const taskListSection = document.createElement("section");
+        taskListSection.id = "task-list";
+
+        // Render each task in the project
+        project.taskList.forEach(task => renderTask(task, taskListSection));
+
+        mainContent.appendChild(taskListSection);
     }
     activeProjectID = projectID;
+}
+
+// Function to render an individual task
+function renderTask(task, container) {
+    const taskArticle = document.createElement("article");
+    taskArticle.classList.add("task");
+
+    const taskTitle = document.createElement("h3");
+    taskTitle.textContent = task.title;
+    taskArticle.appendChild(taskTitle);
+
+    const taskDescription = document.createElement("p");
+    taskDescription.textContent = task.description;
+    taskArticle.appendChild(taskDescription);
+
+    const dueDateParagraph = document.createElement("p");
+    dueDateParagraph.textContent = `Due: ${task.dueDate}`;
+    taskArticle.appendChild(dueDateParagraph);
+
+    const priorityParagraph = document.createElement("p");
+    priorityParagraph.textContent = `Priority: ${task.priority}`;
+    taskArticle.appendChild(priorityParagraph);
+
+    const deleteTaskBtn = document.createElement("button");
+    deleteTaskBtn.textContent = "Delete Task";
+    deleteTaskBtn.type = "button";
+    deleteTaskBtn.classList.add("delete-task-btn");
+    deleteTaskBtn.setAttribute("data-project-id", task.projectID);
+    deleteTaskBtn.setAttribute("data-task-id", task.id); 
+    taskArticle.appendChild(deleteTaskBtn);
+
+    container.appendChild(taskArticle);
 }
 
 const addProjectBtn = document.getElementById("add-project-btn");

@@ -65,5 +65,20 @@ aside {
 
 main {
     grid-area: main;
+    padding: 1rem 2rem;
+}
+
+#tasklist-container {
+    margin: 2rem;
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+.task-box {
+    border: 1px solid #ddd;
     padding: 1rem;
+    border-radius: 4px;
+    width: 200px;
+    background-color: #fafafa;
 }

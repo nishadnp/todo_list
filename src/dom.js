@@ -71,7 +71,7 @@ function renderSelectedProject(projectID) {
         mainContent.appendChild(addTaskBtn);
 
         const taskListSection = document.createElement("section");
-        taskListSection.id = "task-list";
+        taskListSection.id = "tasklist-container";
 
         // Render each task in the project
         project.taskList.forEach(task => renderTask(task, taskListSection));
@@ -84,7 +84,7 @@ function renderSelectedProject(projectID) {
 // Function to render an individual task
 function renderTask(task, container) {
     const taskArticle = document.createElement("article");
-    taskArticle.classList.add("task");
+    taskArticle.classList.add("task-box");
 
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = task.title;

@@ -65,7 +65,7 @@ function renderSelectedProject(projectID) {
 
         const mainContent = document.getElementById("main-content");
         
-        mainContent.innerHTML = ""; // Clear previous content
+        mainContent.replaceChildren(); // Clear previous content
         const projectHeader = document.createElement("h2");
         projectHeader.textContent = project.name;
         mainContent.appendChild(projectHeader);
@@ -76,6 +76,21 @@ function renderSelectedProject(projectID) {
         addTaskBtn.classList.add("add-btn");
         addTaskBtn.id = "add-task-btn";
         mainContent.appendChild(addTaskBtn);
+
+        const taskPriorityLegendDiv = document.createElement("div");
+        taskPriorityLegendDiv.id = "task-priority-legend";
+        taskPriorityLegendDiv.innerHTML = `<span>Priority Level:</span>
+        <div class="priority-color-level"> 
+            <div class="priority-color-box high"></div> High
+        </div>
+        <div class="priority-color-level"> 
+            <div class="priority-color-box medium"></div> Medium
+        </div>
+        <div class="priority-color-level"> 
+            <div class="priority-color-box low"></div> Low
+        </div>`;
+
+        mainContent.appendChild(taskPriorityLegendDiv);
 
         const taskListSection = document.createElement("section");
         taskListSection.id = "tasklist-container";

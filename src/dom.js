@@ -4,6 +4,13 @@
 
 import { projectList, createProject, removeProject, createTask, removeTask } from "./projects.js";
 
+// CSS classes for task priorities
+const priorityClasses = {
+    High: "high-priority-task",
+    Medium: "medium-priority-task",
+    Low: "low-priority-task"
+};
+
 // Function to render the list of projects in the DOM
 function renderProjects() {
     // Get the project list container
@@ -84,7 +91,7 @@ function renderSelectedProject(projectID) {
 // Function to render an individual task
 function renderTask(task, container) {
     const taskArticle = document.createElement("article");
-    taskArticle.classList.add("task-box");
+    taskArticle.classList.add("task-box", getTaskPriorityClass(task.priority));
 
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = task.title;
@@ -111,6 +118,11 @@ function renderTask(task, container) {
     taskArticle.appendChild(deleteTaskBtn);
 
     container.appendChild(taskArticle);
+}
+
+// Function to get CSS class based on task priority
+function getTaskPriorityClass(priority) {
+    return priorityClasses[priority] || "";
 }
 
 const addProjectBtn = document.getElementById("add-project-btn");

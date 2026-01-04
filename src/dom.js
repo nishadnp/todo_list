@@ -101,13 +101,13 @@ function renderTask(task, container) {
     taskDescription.textContent = task.description;
     taskArticle.appendChild(taskDescription);
 
-    const dueDateParagraph = document.createElement("p");
-    dueDateParagraph.textContent = `Due: ${task.dueDate}`;
-    taskArticle.appendChild(dueDateParagraph);
+    const taskDueDate = document.createElement("p");
+    taskDueDate.textContent = `Due: ${task.dueDate}`;
+    taskArticle.appendChild(taskDueDate);
 
-    const priorityParagraph = document.createElement("p");
-    priorityParagraph.textContent = `Priority: ${task.priority}`;
-    taskArticle.appendChild(priorityParagraph);
+    const taskPriorityLevel = document.createElement("p");
+    taskPriorityLevel.textContent = `Priority: ${task.priority}`;
+    taskArticle.appendChild(taskPriorityLevel);
 
     const deleteTaskBtn = document.createElement("button");
     deleteTaskBtn.textContent = "- Task";

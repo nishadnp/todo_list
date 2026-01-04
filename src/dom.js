@@ -122,7 +122,7 @@ function renderTask(task, container) {
 
 // Function to get CSS class based on task priority
 function getTaskPriorityClass(priority) {
-    return priorityClasses[priority] || "";
+    return priorityClasses[priority];
 }
 
 const addProjectBtn = document.getElementById("add-project-btn");
@@ -142,7 +142,6 @@ addProjectBtn.addEventListener("click", () => {
     
     addProject(projectName);
     projectNameInput.value = ""; // Clear input field after adding
-    console.log(projectList);
 });
   
 // Event delegation for deleting a project and selecting a project

@@ -136,11 +136,21 @@ addProjectBtn.addEventListener("click", () => {
 // Event delegation for deleting a project and selecting a project
 document.getElementById("projects").addEventListener("click", e => {
     
+    // Handle project deletion
     if (e.target.classList.contains("delete-project-btn")) {
         deleteProject(e.target.getAttribute("data-id"));
-        return; // Exit to avoid rendering selected project
+
+        // Clear main content if the deleted project was the active one
+        if (activeProjectID === e.target.getAttribute("data-id")) {
+            const mainContent = document.getElementById("main-content");
+            mainContent.replaceChildren(); // Clear content
+            activeProjectID = null;
+        }
+
+        return; // Exit to avoid accidentally triggering project selection 
     }
 
+    // Handle project selection
     if (e.target.dataset.id) {
         renderSelectedProject(e.target.dataset.id);
     }

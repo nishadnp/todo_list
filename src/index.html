@@ -11,7 +11,7 @@
     <aside>
         <h2>My Projects</h2>
         <form id="new-project">
-            <label><input type="text" placeholder="Enter new project name"></label>
+            <label><input type="text" placeholder="Enter new project name" required></label>
             <button id="add-project-btn" type="button">Add New Project</button>
         </form>
         <nav id="projects">
@@ -33,11 +33,11 @@
             </label>
             <label>
                 Due Date:
-                <input type="date" id="task-due-date">
+                <input type="date" id="task-due-date" required>
             </label>
             <label>
                 Priority:
-                <select id="task-priority">
+                <select id="task-priority" required>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>

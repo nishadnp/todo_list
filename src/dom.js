@@ -115,8 +115,17 @@ const addProjectBtn = document.getElementById("add-project-btn");
 
 // Event listener for adding a project
 addProjectBtn.addEventListener("click", () => {
-    const projectNameInput = document.querySelector("#new-project input")
-    const projectName = projectNameInput.value.trim();
+    const projectNameInput = document.querySelector("#new-project input");
+
+    // Avoid adding empty project names
+    if (!projectNameInput.checkValidity()) {
+        projectNameInput.reportValidity();
+        return;
+    }
+
+    // Remove leading/trailing whitespace from project name
+    const projectName = projectNameInput.value.trim(); 
+    
     addProject(projectName);
     projectNameInput.value = ""; // Clear input field after adding
     console.log(projectList);
@@ -190,3 +199,6 @@ taskDialog.addEventListener("click", e => {
 
 // Variable to keep track of the currently active project
 let activeProjectID = null;
+
+// Initial render of projects
+renderProjects();

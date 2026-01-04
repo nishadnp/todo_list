@@ -36,6 +36,45 @@ aside {
     border-right: 1px solid #ddd;
 }
 
+#new-project {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#new-project input {
+    width: 75%;
+    padding: 0.5rem 0.3rem;
+    font-size: 0.89rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#projects ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+}
+
+#projects li {
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#projects li:hover {
+    background-color: #e0e0e0; /* subtle hover */
+}
+
+#projects li + li {
+    margin-top: 0.25rem; /* small spacing between projects */
+}
+
+/* Add button common styling */
 .add-btn {
     font-weight: 700;
     background-color: var(--add-button-bg);
@@ -51,6 +90,7 @@ aside {
     background-color: var(--add-button-hover-bg);
 }
 
+/* Delete button common styling */
 .delete-btn {
     font-weight: 700;
     background-color: var(--delete-button-bg);

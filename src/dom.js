@@ -26,7 +26,7 @@ function renderProjects() {
         projectItem.classList.add("project-item");
 
         const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "- Project";
+        deleteBtn.textContent = "- Delete";
         deleteBtn.type = "button";
         deleteBtn.classList.add("delete-project-btn", "delete-btn");
         deleteBtn.setAttribute("data-id", project.id);

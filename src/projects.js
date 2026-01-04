@@ -25,7 +25,26 @@ class Task {
     }
 }
 
-const projectList = []; // Array to hold all projects
+// Array to hold all the projects
+const projectList = [
+    new Project("Inbox")
+];
+
+function seedDefaultProjects() {
+    const inboxProject = projectList[0];
+
+    // Sample tasks for the Inbox project
+    inboxProject.taskList.push(
+        new Task(inboxProject.id, "Buy", "This is your inbox where all your tasks will appear. Feel free to add, edit, or delete tasks as you like.", "2026-01-07", "High")
+    );
+    inboxProject.taskList.push(
+        new Task(inboxProject.id, "Getting Started", "To create a new project, click on the 'Add Project' button. You can then add tasks to your projects.", "2026-02-22", "Medium")
+    );
+    inboxProject.taskList.push(
+        new Task(inboxProject.id, "Organize Your Tasks", "You can set due dates and priorities for your tasks to help you stay organized and focused.", "2026-05-30", "Low")
+    );
+}
+
 
 // Functions to manage projects and tasks
 
@@ -56,5 +75,7 @@ function removeTask(projectID, taskID) {
         }
     }
 }
+
+seedDefaultProjects();
 
 export { projectList, createProject, removeProject, createTask, removeTask };

@@ -19,9 +19,9 @@ function renderProjects() {
         projectItem.classList.add("project-item");
 
         const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
+        deleteBtn.textContent = "- Project";
         deleteBtn.type = "button";
-        deleteBtn.classList.add("delete-project-btn");
+        deleteBtn.classList.add("delete-project-btn", "delete-btn");
         deleteBtn.setAttribute("data-id", project.id);
 
         projectItem.appendChild(deleteBtn);
@@ -64,7 +64,9 @@ function renderSelectedProject(projectID) {
         mainContent.appendChild(projectHeader);
 
         const addTaskBtn = document.createElement("button");
-        addTaskBtn.textContent = "Add Task";
+        addTaskBtn.textContent = "+ New Task";
+        addTaskBtn.type = "button";
+        addTaskBtn.classList.add("add-btn");
         addTaskBtn.id = "add-task-btn";
         mainContent.appendChild(addTaskBtn);
 
@@ -101,9 +103,9 @@ function renderTask(task, container) {
     taskArticle.appendChild(priorityParagraph);
 
     const deleteTaskBtn = document.createElement("button");
-    deleteTaskBtn.textContent = "Delete Task";
+    deleteTaskBtn.textContent = "- Task";
     deleteTaskBtn.type = "button";
-    deleteTaskBtn.classList.add("delete-task-btn");
+    deleteTaskBtn.classList.add("delete-task-btn", "delete-btn");
     deleteTaskBtn.setAttribute("data-project-id", task.projectID);
     deleteTaskBtn.setAttribute("data-task-id", task.id); 
     taskArticle.appendChild(deleteTaskBtn);

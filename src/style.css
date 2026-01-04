@@ -2,10 +2,19 @@
     box-sizing: border-box;
 }
 
+:root {
+    --add-button-bg: #4CAF50;
+    --add-button-color: white;
+    --add-button-hover-bg: #45a049;
+    --delete-button-bg: #f44336;
+    --delete-button-color: white;
+    --delete-button-hover-bg: #da190b;
+}
+
 html, body {
     margin: 0;
     padding: 0;
-    font-family: inherit;
+    font-family: Arial, sans-serif;
     line-height: 1.5;
 }
 
@@ -22,6 +31,36 @@ aside {
     background-color: #f4f4f4;
     padding: 1rem;
     border-right: 1px solid #ddd;
+}
+
+.add-btn {
+    font-weight: 700;
+    background-color: var(--add-button-bg);
+    color: var(--add-button-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.add-btn:hover {
+    background-color: var(--add-button-hover-bg);
+}
+
+.delete-btn {
+    font-weight: 700;
+    background-color: var(--delete-button-bg);
+    color: var(--delete-button-color);
+    border: none;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.delete-btn:hover {
+    background-color: var(--delete-button-hover-bg);
 }
 
 main {

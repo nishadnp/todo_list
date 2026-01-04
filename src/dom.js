@@ -66,10 +66,13 @@ function renderSelectedProject(projectID) {
         const mainContent = document.getElementById("main-content");
         
         mainContent.replaceChildren(); // Clear previous content
+
+        // Project Header
         const projectHeader = document.createElement("h2");
         projectHeader.textContent = project.name;
         mainContent.appendChild(projectHeader);
 
+        // Add Task Button
         const addTaskBtn = document.createElement("button");
         addTaskBtn.textContent = "+ New Task";
         addTaskBtn.type = "button";
@@ -77,6 +80,7 @@ function renderSelectedProject(projectID) {
         addTaskBtn.id = "add-task-btn";
         mainContent.appendChild(addTaskBtn);
 
+        // Task Priority Legend
         const taskPriorityLegendDiv = document.createElement("div");
         taskPriorityLegendDiv.id = "task-priority-legend";
         taskPriorityLegendDiv.innerHTML = `<span>Priority Level:</span>
@@ -92,6 +96,7 @@ function renderSelectedProject(projectID) {
 
         mainContent.appendChild(taskPriorityLegendDiv);
 
+        // Section to hold the task list
         const taskListSection = document.createElement("section");
         taskListSection.id = "tasklist-container";
 
@@ -119,10 +124,6 @@ function renderTask(task, container) {
     const taskDueDate = document.createElement("p");
     taskDueDate.textContent = `Due: ${task.dueDate}`;
     taskArticle.appendChild(taskDueDate);
-
-    const taskPriorityLevel = document.createElement("p");
-    taskPriorityLevel.textContent = `Priority: ${task.priority}`;
-    taskArticle.appendChild(taskPriorityLevel);
 
     const deleteTaskBtn = document.createElement("button");
     deleteTaskBtn.textContent = "- Task";

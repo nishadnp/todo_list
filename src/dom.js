@@ -105,7 +105,29 @@ function renderSelectedProject(projectID) {
 
         mainContent.appendChild(taskListSection);
     }
+
+    // Track previous selected and current selected projects
+    const previousActiveProject = activeProjectID;
+
     activeProjectID = projectID;
+
+    highlightActiveProject(activeProjectID, previousActiveProject);
+}
+
+// Function to highlight current selected project by assigning/removing .active class
+function highlightActiveProject(activeProjectID, previousActiveProject) {
+    const projectNavList = document.querySelectorAll("#projects li");
+
+    projectNavList.forEach(listItem => {
+
+        if (listItem.getAttribute("data-id") === activeProjectID) {
+            listItem.classList.add("active");
+        }
+        if (previousActiveProject && listItem.getAttribute("data-id") === previousActiveProject) {
+            listItem.classList.remove("active");
+        }
+
+    });
 }
 
 // Function to render an individual task

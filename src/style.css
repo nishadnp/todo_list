@@ -74,6 +74,11 @@ aside {
     margin-top: 0.25rem; /* small spacing between projects */
 }
 
+#projects li.active {
+    background-color: #cfd8dc; /* subtle highlight for active project */
+    font-weight: bold;
+}
+
 /* Add button common styling */
 .add-btn {
     font-weight: 700;

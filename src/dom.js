@@ -106,28 +106,25 @@ function renderSelectedProject(projectID) {
         mainContent.appendChild(taskListSection);
     }
 
-    // Track previous selected and current selected projects
-    const previousActiveProject = activeProjectID;
-
+    // Update application state to reflect the selected project
     activeProjectID = projectID;
 
-    highlightActiveProject(activeProjectID, previousActiveProject);
+    // Visually highlight the selected project in the sidebar
+    highlightActiveProject(activeProjectID);
 }
 
-// Function to highlight current selected project by assigning/removing .active class
-function highlightActiveProject(activeProjectID, previousActiveProject) {
-    const projectNavList = document.querySelectorAll("#projects li");
+// Function to highlight current selected project by adding/removing .active class
+function highlightActiveProject(activeProjectID) {
+    
+    // Remove highlight from any previously active project (if one exists)
+    document
+        .querySelector("#projects li.active")
+        ?.classList.remove("active");
 
-    projectNavList.forEach(listItem => {
-
-        if (listItem.getAttribute("data-id") === activeProjectID) {
-            listItem.classList.add("active");
-        }
-        if (previousActiveProject && listItem.getAttribute("data-id") === previousActiveProject) {
-            listItem.classList.remove("active");
-        }
-
-    });
+    // Highlight the newly selected project
+    document
+        .querySelector(`#projects li[data-id="${activeProjectID}"]`)
+        ?.classList.add("active");
 }
 
 // Function to render an individual task

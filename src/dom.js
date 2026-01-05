@@ -117,6 +117,9 @@ function renderTask(task, container) {
     taskTitle.textContent = task.title;
     taskArticle.appendChild(taskTitle);
 
+    // Accessibility: announce priority
+    taskArticle.setAttribute("aria-label", `${task.priority} Priority`);
+
     const taskDescription = document.createElement("p");
     taskDescription.textContent = task.description;
     taskArticle.appendChild(taskDescription);

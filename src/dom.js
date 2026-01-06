@@ -14,7 +14,7 @@
 import { projectList, createProject, removeProject, createTask, removeTask } from "./projects.js";
 import deleteIcon from "./assets/icons/delete-forever.svg";
 import editIcon from "./assets/icons/edit-icon.svg";
-import checkOkayIcon from "./assets/icons/check-okay-icon.svg"
+import checkOkayIcon from "./assets/icons/check-okay-icon.svg";
 
 // CSS classes for task priorities
 const priorityClasses = {
@@ -23,84 +23,125 @@ const priorityClasses = {
     Low: "low-priority-task"
 };
 
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Creates a button with an icon image.
+ * @param {Object} params
+ * @param {string} params.id - optional button id
+ * @param {Array} params.classes - array of class names
+ * @param {string} params.iconSrc - icon image source
+ * @param {string} params.alt - alt text for image
+ * @param {Object} params.dataset - key-value pairs for data attributes
+ * @returns {HTMLElement} button element with icon
+ */
+function createIconButton({ id, classes = [], iconSrc, alt, dataset = {} }) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    if (id) btn.id = id;
+    btn.classList.add(...classes);
+
+    const img = document.createElement("img");
+    img.src = iconSrc;
+    img.alt = alt;
+    img.classList.add("project-btn-icon");
+    btn.appendChild(img);
+
+    for (const key in dataset) {
+        btn.dataset[key] = dataset[key];
+    }
+
+    return btn;
+}
+
+/**
+ * Returns the closest li.project-item element from a child node.
+ * @param {HTMLElement} el
+ */
+function getProjectItemNode(el) {
+    return el.closest("li.project-item");
+}
+
+/**
+ * Commits a project name edit.
+ * @param {HTMLElement} projectItemNode
+ * @param {HTMLInputElement} input
+ * @param {string} projectID
+ */
+function commitProjectEdit(projectItemNode, input, projectID) {
+    const newName = input.value.trim();
+    if (!newName) return;
+
+    const project = projectList.find(p => p.id === projectID);
+    project.name = newName;
+
+    renderProjects();
+
+    if (activeProjectID === projectID) {
+        highlightActiveProject(projectID);
+    }
+}
+
+/**
+ * Get the CSS class for a task based on priority.
+ * @param {string} priority
+ */
+function getTaskPriorityClass(priority) {
+    return priorityClasses[priority];
+}
 
 // ============================================================================
 // Sidebar – Project List Rendering
 // ============================================================================
 
-// Function to render the list of projects in the DOM
+/**
+ * Render all projects in the sidebar.
+ */
 function renderProjects() {
     const projectListDisplay = document.querySelector("#projects > ul");
     projectListDisplay.replaceChildren(); // Clear existing list
 
     projectList.forEach(project => {
         const projectItem = document.createElement("li");
-        projectItem.textContent = project.name;
-        projectItem.setAttribute("data-id", project.id);
         projectItem.classList.add("project-item");
+        projectItem.dataset.id = project.id;
 
-        const editBtn = document.createElement("button");
-        const editIconImg = document.createElement("img");
+        // Project name text node
+        const nameTextNode = document.createTextNode(project.name);
+        projectItem.appendChild(nameTextNode);
 
-        editIconImg.alt = "Edit Icon";
-        editIconImg.classList.add("project-btn-icon");
-        editIconImg.src = editIcon;
-
-        editBtn.type = "button";
-        editBtn.classList.add("edit-project-btn");
-        editBtn.setAttribute("data-id", project.id);
-        editBtn.appendChild(editIconImg);
-
-        const deleteBtn = document.createElement("button");
-        const deleteIconImg = document.createElement("img");
-        deleteIconImg.alt = "Delete Icon";
-        deleteIconImg.classList.add("project-btn-icon");
-        deleteIconImg.src = deleteIcon;
-
-        deleteBtn.type = "button";
-        deleteBtn.classList.add("delete-project-btn", "delete-btn");
-        deleteBtn.setAttribute("data-id", project.id);
-        deleteBtn.appendChild(deleteIconImg);
-
+        // Buttons container
         const buttonDiv = document.createElement("div");
-        buttonDiv.appendChild(editBtn);
-        buttonDiv.appendChild(deleteBtn);
+
+        // Edit button
+        const editBtn = createIconButton({
+            classes: ["edit-project-btn"],
+            iconSrc: editIcon,
+            alt: "Edit Icon",
+            dataset: { id: project.id }
+        });
+
+        // Delete button
+        const deleteBtn = createIconButton({
+            classes: ["delete-project-btn", "delete-btn"],
+            iconSrc: deleteIcon,
+            alt: "Delete Icon",
+            dataset: { id: project.id }
+        });
+
+        buttonDiv.append(editBtn, deleteBtn);
         projectItem.appendChild(buttonDiv);
 
         projectListDisplay.appendChild(projectItem);
     });
 }
 
-function addProject(projectName) {
-    createProject(projectName);
-    renderProjects();
-}
-
-function deleteProject(projectID) {
-    removeProject(projectID);
-    renderProjects();
-}
-
-
-// ==================================================
-// Task Actions (UI Coordination)
-// ==================================================
-
-function addTaskToProject(projectID, title, description, dueDate, priority) {
-    createTask(projectID, title, description, dueDate, priority);
-    renderSelectedProject(projectID);
-}
-
-function deleteTaskFromProject(projectID, taskID) {
-    removeTask(projectID, taskID);
-    renderSelectedProject(projectID);
-}
-
-
-// ============================================================================
-// Project Selection & UI State
-// ============================================================================
-
+/**
+ * Replace project name with input and swap edit icon for check icon.
+ * @param {HTMLElement} projectItemNode
+ */
 function editProjectNameUI(projectItemNode) {
     const projectID = projectItemNode.dataset.id;
     const project = projectList.find(p => p.id === projectID);
@@ -120,7 +161,6 @@ function editProjectNameUI(projectItemNode) {
     input.value = project.name;
     input.classList.add("edit-project-input");
 
-    // Replace text with input
     projectItemNode.replaceChild(input, nameText);
     input.focus();
     input.select();
@@ -133,43 +173,66 @@ function editProjectNameUI(projectItemNode) {
     checkIconImg.classList.add("project-btn-icon");
     editBtn.appendChild(checkIconImg);
 
-    // Save handler
-    const commitEdit = () => {
-        const newName = input.value.trim();
-        if (!newName) return;
-
-        project.name = newName;
-        renderProjects();
-
-        // Restore active highlight if needed
-        if (activeProjectID === projectID) {
-            highlightActiveProject(projectID);
-        }
-    };
-
     // Click ✔
-    editBtn.addEventListener("click", commitEdit, { once: true });
+    editBtn.addEventListener("click", () => commitProjectEdit(projectItemNode, input, projectID), { once: true });
 
-    // Enter key support
+    // Enter/Escape support
     input.addEventListener("keydown", e => {
-        if (e.key === "Enter") commitEdit();
+        if (e.key === "Enter") commitProjectEdit(projectItemNode, input, projectID);
         if (e.key === "Escape") renderProjects();
     });
 }
 
+/**
+ * Add new project.
+ */
+function addProject(projectName) {
+    createProject(projectName);
+    renderProjects();
+}
+
+/**
+ * Delete project.
+ */
+function deleteProject(projectID) {
+    removeProject(projectID);
+    renderProjects();
+}
+
+// ============================================================================
+// Task Actions
+// ============================================================================
+
+function addTaskToProject(projectID, title, description, dueDate, priority) {
+    createTask(projectID, title, description, dueDate, priority);
+    renderSelectedProject(projectID);
+}
+
+function deleteTaskFromProject(projectID, taskID) {
+    removeTask(projectID, taskID);
+    renderSelectedProject(projectID);
+}
+
+// ============================================================================
+// Project Selection & UI State
+// ============================================================================
+
+/**
+ * Render selected project and its tasks in main area.
+ */
 function renderSelectedProject(projectID) {
-    const project = projectList.find(proj => proj.id === projectID);
+    const project = projectList.find(p => p.id === projectID);
     if (!project) return;
 
     const mainContent = document.getElementById("main-content");
-    mainContent.replaceChildren(); // Clear previous content
+    mainContent.replaceChildren();
 
-    // Project Header
+    // Project header
     const projectHeader = document.createElement("h2");
     projectHeader.textContent = project.name;
     mainContent.appendChild(projectHeader);
 
-    // Add Task Button
+    // Add task button
     const addTaskBtn = document.createElement("button");
     addTaskBtn.textContent = "+ New Task";
     addTaskBtn.type = "button";
@@ -177,7 +240,7 @@ function renderSelectedProject(projectID) {
     addTaskBtn.id = "add-task-btn";
     mainContent.appendChild(addTaskBtn);
 
-    // Task Priority Legend
+    // Priority legend
     const taskPriorityLegendDiv = document.createElement("div");
     taskPriorityLegendDiv.id = "task-priority-legend";
     taskPriorityLegendDiv.innerHTML = `
@@ -200,7 +263,6 @@ function renderSelectedProject(projectID) {
     project.taskList.forEach(task => projectTaskPreview(task, taskListSection));
     mainContent.appendChild(taskListSection);
 
-    // Update state & sidebar highlight
     activeProjectID = projectID;
     highlightActiveProject(activeProjectID);
 }
@@ -210,6 +272,9 @@ function highlightActiveProject(activeProjectID) {
     document.querySelector(`#projects li[data-id="${activeProjectID}"]`)?.classList.add("active");
 }
 
+/**
+ * Render a task preview box in the main area.
+ */
 function projectTaskPreview(task, container) {
     const taskArticle = document.createElement("article");
     taskArticle.classList.add("task-box-preview", getTaskPriorityClass(task.priority));
@@ -219,7 +284,6 @@ function projectTaskPreview(task, container) {
 
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = task.title;
-
     const taskDueDate = document.createElement("p");
     taskDueDate.textContent = `Due: ${task.dueDate}`;
 
@@ -227,9 +291,8 @@ function projectTaskPreview(task, container) {
     container.appendChild(taskArticle);
 }
 
-
 // ============================================================================
-// Task Rendering & Modals
+// Task Modals
 // ============================================================================
 
 function openTaskView(projectID, taskID) {
@@ -243,17 +306,13 @@ function openTaskView(projectID, taskID) {
 
     const title = document.createElement("h3");
     title.textContent = task.title;
-
     const desc = document.createElement("p");
     desc.textContent = task.description || "No description";
-
     const due = document.createElement("p");
     due.textContent = `Due: ${task.dueDate}`;
-
     const priority = document.createElement("p");
     priority.textContent = `Priority: ${task.priority}`;
 
-    // Attach projectID & taskID to buttons
     const deleteBtn = document.querySelector("#view-task-modal .delete-task-btn");
     const editBtn = document.querySelector("#view-task-modal .edit-btn");
     [deleteBtn, editBtn].forEach(btn => {
@@ -265,16 +324,16 @@ function openTaskView(projectID, taskID) {
     taskBoxDialog.showModal();
 }
 
-function getTaskPriorityClass(priority) {
-    return priorityClasses[priority];
-}
-
-
 // ============================================================================
 // Event Listeners
 // ============================================================================
 
 const addProjectBtn = document.getElementById("add-project-btn");
+const taskFormDialog = document.getElementById("task-modal");
+const taskBoxDialog = document.getElementById("view-task-modal");
+let editingTask = null;
+
+// Add project
 addProjectBtn.addEventListener("click", () => {
     const projectNameInput = document.querySelector("#new-project input");
     if (!projectNameInput.checkValidity()) {
@@ -286,7 +345,7 @@ addProjectBtn.addEventListener("click", () => {
     projectNameInput.value = "";
 });
 
-// Sidebar click (select, edit & delete project)
+// Sidebar delegation (select, edit, delete project)
 document.getElementById("projects").addEventListener("click", e => {
     const deleteBtn = e.target.closest(".delete-project-btn");
     if (deleteBtn) {
@@ -301,12 +360,12 @@ document.getElementById("projects").addEventListener("click", e => {
 
     const editBtn = e.target.closest(".edit-project-btn");
     if (editBtn) {
-        editProjectNameUI(editBtn.parentElement.parentElement);
-        
+        const projectItemNode = getProjectItemNode(editBtn);
+        editProjectNameUI(projectItemNode);
+
         const id = editBtn.dataset.id;
-        if (id === activeProjectID) {
-            renderSelectedProject(id);
-        }
+        if (id === activeProjectID) renderSelectedProject(id);
+        return;
     }
 
     if (e.target.dataset.id) {
@@ -314,26 +373,18 @@ document.getElementById("projects").addEventListener("click", e => {
     }
 });
 
-const taskFormDialog = document.getElementById("task-modal");
-const taskBoxDialog = document.getElementById("view-task-modal");
-
-let editingTask = null;
-
-// Main content click (open task or show task modal)
+// Main content delegation (open task or new task)
 document.getElementById("main-content").addEventListener("click", e => {
     if (e.target.id === "add-task-btn") {
-        editingTask = null; // Reset edit mode
+        editingTask = null;
         taskFormDialog.showModal();
         return;
     }
-
     const taskPreview = e.target.closest(".task-box-preview");
-    if (taskPreview) {
-        openTaskView(taskPreview.dataset.projectId, taskPreview.dataset.taskId);
-    }
+    if (taskPreview) openTaskView(taskPreview.dataset.projectId, taskPreview.dataset.taskId);
 });
 
-// Task form modal (Add or Edit)
+// Task form modal (Add/Edit)
 taskFormDialog.addEventListener("click", e => {
     const form = document.querySelector("#task-modal form");
 
@@ -374,9 +425,8 @@ taskFormDialog.addEventListener("click", e => {
     }
 });
 
-// Task view modal (Edit / Delete / Close)
+// Task view modal (Edit/Delete/Close)
 taskBoxDialog.addEventListener("click", e => {
-
     if (e.target.classList.contains("close-modal-btn")) {
         taskBoxDialog.close();
         return;
@@ -395,7 +445,6 @@ taskBoxDialog.addEventListener("click", e => {
         const task = project.taskList.find(t => t.id === taskId);
         if (!task) return;
 
-        // Prefill form
         const form = document.querySelector("#task-modal form");
         form.elements["task-title"].value = task.title;
         form.elements["task-desc"].value = task.description;
@@ -406,7 +455,6 @@ taskBoxDialog.addEventListener("click", e => {
         taskFormDialog.showModal();
     }
 });
-
 
 // ============================================================================
 // Application State & Initialization

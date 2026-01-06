@@ -290,3 +290,19 @@ dialog::backdrop {
 #view-task-modal-btns button.edit-btn:hover {
     background-color: #1976D2;
 }
+
+.delete-project-btn {
+    background-color: unset;
+    padding: 0;
+}
+
+.delete-project-btn:hover {
+    background-color: unset;
+    transform: scale(1.2);
+    transition: transform 0.15s ease;
+}
+
+.project-btn-icon {
+    width: 15px;
+    height: auto;
+}

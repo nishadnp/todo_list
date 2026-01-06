@@ -12,6 +12,7 @@
 // ============================================================================
 
 import { projectList, createProject, removeProject, createTask, removeTask } from "./projects.js";
+import deleteIcon from "./assets/icons/delete-forever.svg";
 
 // CSS classes for task priorities
 const priorityClasses = {
@@ -28,7 +29,7 @@ const priorityClasses = {
 // Function to render the list of projects in the DOM
 function renderProjects() {
     const projectListDisplay = document.querySelector("#projects > ul");
-    projectListDisplay.innerHTML = ""; // Clear existing list
+    projectListDisplay.replaceChildren(); // Clear existing list
 
     projectList.forEach(project => {
         const projectItem = document.createElement("li");
@@ -37,10 +38,16 @@ function renderProjects() {
         projectItem.classList.add("project-item");
 
         const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "- Delete";
+        const deleteIconImg = document.createElement("img");
+        deleteIconImg.alt = "Delete Icon";
+        deleteIconImg.classList.add("project-btn-icon");
+        deleteIconImg.src = deleteIcon;
+
+        
         deleteBtn.type = "button";
         deleteBtn.classList.add("delete-project-btn", "delete-btn");
         deleteBtn.setAttribute("data-id", project.id);
+        deleteBtn.appendChild(deleteIconImg);
 
         projectItem.appendChild(deleteBtn);
         projectListDisplay.appendChild(projectItem);
@@ -208,8 +215,9 @@ addProjectBtn.addEventListener("click", () => {
 
 // Sidebar click (select & delete project)
 document.getElementById("projects").addEventListener("click", e => {
-    if (e.target.classList.contains("delete-project-btn")) {
-        const id = e.target.dataset.id;
+    const deleteBtn = e.target.closest(".delete-project-btn");
+    if (deleteBtn) {
+        const id = deleteBtn.dataset.id;
         deleteProject(id);
         if (activeProjectID === id) {
             document.getElementById("main-content").replaceChildren();

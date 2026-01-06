@@ -13,6 +13,8 @@
 
 import { projectList, createProject, removeProject, createTask, removeTask } from "./projects.js";
 import deleteIcon from "./assets/icons/delete-forever.svg";
+import editIcon from "./assets/icons/edit-icon.svg";
+import checkOkayIcon from "./assets/icons/check-okay-icon.svg"
 
 // CSS classes for task priorities
 const priorityClasses = {
@@ -37,19 +39,34 @@ function renderProjects() {
         projectItem.setAttribute("data-id", project.id);
         projectItem.classList.add("project-item");
 
+        const editBtn = document.createElement("button");
+        const editIconImg = document.createElement("img");
+
+        editIconImg.alt = "Edit Icon";
+        editIconImg.classList.add("project-btn-icon");
+        editIconImg.src = editIcon;
+
+        editBtn.type = "button";
+        editBtn.classList.add("edit-project-btn");
+        editBtn.setAttribute("data-id", project.id);
+        editBtn.appendChild(editIconImg);
+
         const deleteBtn = document.createElement("button");
         const deleteIconImg = document.createElement("img");
         deleteIconImg.alt = "Delete Icon";
         deleteIconImg.classList.add("project-btn-icon");
         deleteIconImg.src = deleteIcon;
 
-        
         deleteBtn.type = "button";
         deleteBtn.classList.add("delete-project-btn", "delete-btn");
         deleteBtn.setAttribute("data-id", project.id);
         deleteBtn.appendChild(deleteIconImg);
 
-        projectItem.appendChild(deleteBtn);
+        const buttonDiv = document.createElement("div");
+        buttonDiv.appendChild(editBtn);
+        buttonDiv.appendChild(deleteBtn);
+        projectItem.appendChild(buttonDiv);
+
         projectListDisplay.appendChild(projectItem);
     });
 }
@@ -83,6 +100,62 @@ function deleteTaskFromProject(projectID, taskID) {
 // ============================================================================
 // Project Selection & UI State
 // ============================================================================
+
+function editProjectNameUI(projectItemNode) {
+    const projectID = projectItemNode.dataset.id;
+    const project = projectList.find(p => p.id === projectID);
+    if (!project) return;
+
+    // Prevent double-editing
+    if (projectItemNode.querySelector("input")) return;
+
+    // Extract existing elements
+    const nameText = projectItemNode.firstChild;
+    const buttonDiv = projectItemNode.querySelector("div");
+    const editBtn = buttonDiv.querySelector(".edit-project-btn");
+
+    // Create input
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = project.name;
+    input.classList.add("edit-project-input");
+
+    // Replace text with input
+    projectItemNode.replaceChild(input, nameText);
+    input.focus();
+    input.select();
+
+    // Swap edit icon → check icon
+    editBtn.replaceChildren();
+    const checkIconImg = document.createElement("img");
+    checkIconImg.src = checkOkayIcon;
+    checkIconImg.alt = "Confirm edit";
+    checkIconImg.classList.add("project-btn-icon");
+    editBtn.appendChild(checkIconImg);
+
+    // Save handler
+    const commitEdit = () => {
+        const newName = input.value.trim();
+        if (!newName) return;
+
+        project.name = newName;
+        renderProjects();
+
+        // Restore active highlight if needed
+        if (activeProjectID === projectID) {
+            highlightActiveProject(projectID);
+        }
+    };
+
+    // Click ✔
+    editBtn.addEventListener("click", commitEdit, { once: true });
+
+    // Enter key support
+    input.addEventListener("keydown", e => {
+        if (e.key === "Enter") commitEdit();
+        if (e.key === "Escape") renderProjects();
+    });
+}
 
 function renderSelectedProject(projectID) {
     const project = projectList.find(proj => proj.id === projectID);
@@ -213,7 +286,7 @@ addProjectBtn.addEventListener("click", () => {
     projectNameInput.value = "";
 });
 
-// Sidebar click (select & delete project)
+// Sidebar click (select, edit & delete project)
 document.getElementById("projects").addEventListener("click", e => {
     const deleteBtn = e.target.closest(".delete-project-btn");
     if (deleteBtn) {
@@ -225,6 +298,17 @@ document.getElementById("projects").addEventListener("click", e => {
         }
         return;
     }
+
+    const editBtn = e.target.closest(".edit-project-btn");
+    if (editBtn) {
+        editProjectNameUI(editBtn.parentElement.parentElement);
+        
+        const id = editBtn.dataset.id;
+        if (id === activeProjectID) {
+            renderSelectedProject(id);
+        }
+    }
+
     if (e.target.dataset.id) {
         renderSelectedProject(e.target.dataset.id);
     }

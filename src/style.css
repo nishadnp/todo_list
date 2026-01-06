@@ -76,7 +76,7 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -291,18 +291,38 @@ dialog::backdrop {
     background-color: #1976D2;
 }
 
-.delete-project-btn {
-    background-color: unset;
-    padding: 0;
+.edit-project-btn {
+    cursor: pointer;
 }
 
-.delete-project-btn:hover {
+.delete-project-btn, .edit-project-btn {
+    border: none;
+    background-color: unset;
+    padding: 0;
+    margin-left: 8px;
+}
+
+.edit-project-btn:hover, .delete-project-btn:hover {
     background-color: unset;
     transform: scale(1.2);
     transition: transform 0.15s ease;
 }
 
-.project-btn-icon {
+
+.edit-project-btn > .project-btn-icon {
+    width: auto;
+    height: 20px;
+}
+
+.delete-project-btn .project-btn-icon {
     width: 15px;
-    height: auto;
+    height: 20px;
+}
+
+.edit-project-input {
+    width: 100%;
+    font-size: inherit;
+    padding: 0.2rem 0.4rem;
+    border: none;
+    margin-left: 7.5px;
 }

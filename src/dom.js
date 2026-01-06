@@ -1,6 +1,16 @@
-// dom.js
+/**
+ * dom.js
+ *
+ * Handles all DOM rendering and user interactions.
+ * Owns UI state (active project) and delegates data
+ * mutations to projects.js.
+ */
 
-// This file will handle all DOM manipulations for the To-Do List application
+
+
+// ============================================================================
+// Imports & Constants
+// ============================================================================
 
 import { projectList, createProject, removeProject, createTask, removeTask } from "./projects.js";
 
@@ -10,6 +20,11 @@ const priorityClasses = {
     Medium: "medium-priority-task",
     Low: "low-priority-task"
 };
+
+
+// ============================================================================
+// Sidebar – Project List Rendering
+// ============================================================================
 
 // Function to render the list of projects in the DOM
 function renderProjects() {
@@ -46,6 +61,11 @@ function deleteProject(projectID) {
     renderProjects();
 }
 
+
+// ==================================================
+// Task Actions (UI Coordination)
+// ==================================================
+
 function addTaskToProject(projectID, title, description, dueDate, priority) {
     createTask(projectID, title, description, dueDate, priority);
     renderSelectedProject(projectID);
@@ -55,6 +75,11 @@ function deleteTaskFromProject(projectID, taskID) {
     removeTask(projectID, taskID);
     renderSelectedProject(projectID);
 }
+
+
+// ============================================================================
+// Project Selection & UI State
+// ============================================================================
 
 // Function to render the selected project's tasks
 function renderSelectedProject(projectID) {
@@ -127,6 +152,11 @@ function highlightActiveProject(activeProjectID) {
         ?.classList.add("active");
 }
 
+
+// ============================================================================
+// Task Rendering
+// ============================================================================
+
 // Function to render an individual task
 function renderTask(task, container) {
     const taskArticle = document.createElement("article");
@@ -181,7 +211,12 @@ addProjectBtn.addEventListener("click", () => {
     addProject(projectName);
     projectNameInput.value = ""; // Clear input field after adding
 });
-  
+
+
+// ============================================================================
+// Event Handlers – Sidebar
+// ============================================================================
+
 // Event delegation for deleting a project and selecting a project
 document.getElementById("projects").addEventListener("click", e => {
     
@@ -204,6 +239,11 @@ document.getElementById("projects").addEventListener("click", e => {
         renderSelectedProject(e.target.dataset.id);
     }
 });
+
+
+// ============================================================================
+// Event Handlers – Tasks & Dialog
+// ============================================================================
 
 const taskDialog = document.getElementById("task-modal");
 
@@ -252,11 +292,13 @@ taskDialog.addEventListener("click", e => {
 
         taskForm.reset();
         taskDialog.close();
-    }
-
-
-    
+    } 
 });
+
+
+// ============================================================================
+// Application State & Initialization
+// ============================================================================
 
 // Variable to keep track of the currently active project
 let activeProjectID = null;

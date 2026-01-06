@@ -126,7 +126,7 @@ function renderSelectedProject(projectID) {
         taskListSection.id = "tasklist-container";
 
         // Render each task in the project
-        project.taskList.forEach(task => renderTask(task, taskListSection));
+        project.taskList.forEach(task => projectTaskPreview(task, taskListSection));
 
         mainContent.appendChild(taskListSection);
     }
@@ -152,41 +152,64 @@ function highlightActiveProject(activeProjectID) {
         ?.classList.add("active");
 }
 
+function projectTaskPreview(task, container) {
+    const taskArticle = document.createElement("article");
+    taskArticle.classList.add("task-box-preview", getTaskPriorityClass(task.priority));
+
+    // Store identity for later lookup
+    taskArticle.dataset.projectId = task.projectID;
+    taskArticle.dataset.taskId = task.id;
+
+    const taskTitle = document.createElement("h3");
+    taskTitle.textContent = task.title;
+
+    const taskDueDate = document.createElement("p");
+    taskDueDate.textContent = `Due: ${task.dueDate}`;
+
+    taskArticle.append(taskTitle, taskDueDate);
+
+    container.appendChild(taskArticle);
+}
+
 
 // ============================================================================
 // Task Rendering
 // ============================================================================
 
 // Function to render an individual task
-function renderTask(task, container) {
-    const taskArticle = document.createElement("article");
-    taskArticle.classList.add("task-box", getTaskPriorityClass(task.priority));
+function openTaskView(projectID, taskID) {
+    const project = projectList.find(p => p.id === projectID);
+    if (!project) return;
 
-    const taskTitle = document.createElement("h3");
-    taskTitle.textContent = task.title;
-    taskArticle.appendChild(taskTitle);
+    const task = project.taskList.find(t => t.id === taskID);
+    if (!task) return;
 
-    // Accessibility: announce priority
-    taskArticle.setAttribute("aria-label", `${task.priority} Priority`);
+    const modalContent = document.querySelector("#view-task-modal > div:first-child");
+    modalContent.replaceChildren(); // Clear previous task
 
-    const taskDescription = document.createElement("p");
-    taskDescription.textContent = task.description;
-    taskArticle.appendChild(taskDescription);
+    const title = document.createElement("h3");
+    title.textContent = task.title;
 
-    const taskDueDate = document.createElement("p");
-    taskDueDate.textContent = `Due: ${task.dueDate}`;
-    taskArticle.appendChild(taskDueDate);
+    const desc = document.createElement("p");
+    desc.textContent = task.description || "No description";
 
-    const deleteTaskBtn = document.createElement("button");
-    deleteTaskBtn.textContent = "- Task";
-    deleteTaskBtn.type = "button";
-    deleteTaskBtn.classList.add("delete-task-btn", "delete-btn");
-    deleteTaskBtn.setAttribute("data-project-id", task.projectID);
-    deleteTaskBtn.setAttribute("data-task-id", task.id); 
-    taskArticle.appendChild(deleteTaskBtn);
+    const due = document.createElement("p");
+    due.textContent = `Due: ${task.dueDate}`;
 
-    container.appendChild(taskArticle);
+    const priority = document.createElement("p");
+    priority.textContent = `Priority: ${task.priority}`;
+
+    const deleteBtn = document.querySelector("#view-task-modal-btns > div > button:last-child");
+    console.log();
+    
+    deleteBtn.dataset.projectId = task.projectID;
+    deleteBtn.dataset.taskId = task.id;
+
+    modalContent.append(title, desc, due, priority);
+
+    taskBoxDialog.showModal();
 }
+
 
 // Function to get CSS class based on task priority
 function getTaskPriorityClass(priority) {
@@ -245,33 +268,36 @@ document.getElementById("projects").addEventListener("click", e => {
 // Event Handlers – Tasks & Dialog
 // ============================================================================
 
-const taskDialog = document.getElementById("task-modal");
+const taskFormDialog = document.getElementById("task-modal");
+const taskBoxDialog = document.getElementById("view-task-modal");
 
 // Event delegation for adding and deleting tasks within the selected project
 document.getElementById("main-content").addEventListener("click", e => {
 
     if (e.target.id === "add-task-btn") {
-        taskDialog.showModal();
+        taskFormDialog.showModal();
         return;
     }
 
-    if (e.target.classList.contains("delete-task-btn")) {
-        const projectID = e.target.getAttribute("data-project-id");
-        const taskID = e.target.getAttribute("data-task-id");
-        deleteTaskFromProject(projectID, taskID);
-        return;
+    const taskPreview = e.target.closest(".task-box-preview");
+
+    if (taskPreview) {
+        const projectID = taskPreview.dataset.projectId;
+        const taskID = taskPreview.dataset.taskId;
+
+        openTaskView(projectID, taskID);
     }
 
 });
 
-// Event listener for task form submission
-taskDialog.addEventListener("click", e => {
+// Event delegation for task form submission
+taskFormDialog.addEventListener("click", e => {
 
     const taskForm = document.querySelector("#task-modal form");
 
-    if (e.target.id === "close-modal-btn") {
+    if (e.target.classList.contains("close-modal-btn")) {
         taskForm.reset();
-        taskDialog.close();
+        taskFormDialog.close();
         return;
     }
 
@@ -291,10 +317,27 @@ taskDialog.addEventListener("click", e => {
         addTaskToProject(activeProjectID, title, description, dueDate, priority);
 
         taskForm.reset();
-        taskDialog.close();
+        taskFormDialog.close();
     } 
 });
 
+// Event Delegation for view Task
+taskBoxDialog.addEventListener("click", e => {
+
+    if (e.target.classList.contains("close-modal-btn")) {
+        
+        taskBoxDialog.close();
+        return;
+    }
+
+    if (e.target.classList.contains("delete-task-btn")) {
+        const projectID = e.target.getAttribute("data-project-id");
+        const taskID = e.target.getAttribute("data-task-id");
+        deleteTaskFromProject(projectID, taskID);
+        taskBoxDialog.close();
+        return;
+    }
+});
 
 // ============================================================================
 // Application State & Initialization

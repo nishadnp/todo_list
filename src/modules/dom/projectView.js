@@ -6,6 +6,8 @@ import { projectList, createTask, removeTask } from "../data/projects.js";
 import { getTaskPriorityClass } from "./utils.js";
 import { activeProjectID, setActiveProjectID } from "./state.js";
 
+import { isPast, isToday, isTomorrow, format, parseISO } from "date-fns";
+
 // ============================================================================
 // Task Actions
 // ============================================================================
@@ -92,8 +94,28 @@ function projectTaskPreview(task, container) {
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = task.title;
     const taskDueDate = document.createElement("p");
-    taskDueDate.textContent = `Due: ${task.dueDate}`;
+    taskDueDate.textContent = `${dueDateFormatter(task.dueDate)}`;
 
     taskArticle.append(taskTitle, taskDueDate);
     container.appendChild(taskArticle);
+}
+
+function dueDateFormatter(date) {
+
+    if (!date) return "No due date";
+
+    const dueDate = parseISO(date);
+
+    if (Number.isNaN(dueDate)) return "Invalid date";
+
+    if (isPast(dueDate) && !isToday(dueDate)) {
+        return "Overdue!";
+    }
+
+    if (isToday(dueDate)) return "Due by Today";
+
+    else if (isTomorrow(dueDate)) return "Due by Tomorrow";
+
+    else return `Due by ${format(dueDate, "MMM dd")}`;
+
 }

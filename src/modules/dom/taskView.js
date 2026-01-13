@@ -4,6 +4,8 @@
 
 import { projectList } from "../data/projects.js";
 
+import { format, parseISO } from "date-fns";
+
 // ============================================================================
 // Task Modals
 // ============================================================================
@@ -25,7 +27,7 @@ export function openTaskView(projectID, taskID) {
     const desc = document.createElement("p");
     desc.textContent = task.description || "No description";
     const due = document.createElement("p");
-    due.textContent = `Due: ${task.dueDate}`;
+    due.textContent = `Due: ${dateFormatter(task.dueDate)}`;
     const priority = document.createElement("p");
     priority.textContent = `Priority: ${task.priority}`;
 
@@ -38,4 +40,8 @@ export function openTaskView(projectID, taskID) {
 
     modalContent.append(title, desc, due, priority);
     taskBoxDialog.showModal();
+}
+
+function dateFormatter(date) {
+    return format(parseISO(date), "MMM d, yyyy");
 }

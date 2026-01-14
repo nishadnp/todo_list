@@ -38,6 +38,10 @@ export function openTaskView(projectID, taskID) {
         btn.dataset.taskId = task.id;
     });
 
+    // Set checkbox state
+    const checkbox = document.querySelector("#view-task-modal .task-complete-status");
+    checkbox.checked = task.completed;
+
     modalContent.append(title, desc, due, priority);
     taskBoxDialog.showModal();
 }

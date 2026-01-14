@@ -161,6 +161,14 @@ main {
 .medium-priority-task { border-left: 5px solid var(--medium-priority-color); }
 .low-priority-task { border-left: 5px solid var(--low-priority-color); }
 
+.task-box-preview.completed {
+    opacity: 0.6;
+}
+
+.task-box-preview.completed h3 {
+    text-decoration: line-through;
+}
+
 /* ================================================
    Task Priority Legend
    ================================================ */
@@ -266,6 +274,15 @@ dialog::backdrop {
     flex-direction: column;
     gap: 1rem;
     margin-bottom: 1rem;
+}
+
+/* Center the checkbox and label horizontally */
+#view-task-modal label.task-complete-status-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
 }
 
 #view-task-modal-btns {

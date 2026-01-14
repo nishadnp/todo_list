@@ -87,6 +87,9 @@ export function highlightActiveProject(activeProjectID) {
 function projectTaskPreview(task, container) {
     const taskArticle = document.createElement("article");
     taskArticle.classList.add("task-box-preview", getTaskPriorityClass(task.priority));
+    if (task.completed) {
+        taskArticle.classList.add("completed");
+    }
 
     taskArticle.dataset.projectId = task.projectID;
     taskArticle.dataset.taskId = task.id;

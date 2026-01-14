@@ -2,7 +2,7 @@
 // Imports
 // ============================================================================
 
-import { projectList } from "../data/projects.js";
+import { projectList, toggleTaskCompleteStatus } from "../data/projects.js";
 import { renderProjects, addProject, deleteProject, editProjectNameUI } from "./sidebar.js";
 import { renderSelectedProject, addTaskToProject, deleteTaskFromProject } from "./projectView.js";
 import { openTaskView } from "./taskView.js";
@@ -114,6 +114,14 @@ const taskBoxDialog = document.getElementById("view-task-modal");
 taskBoxDialog.addEventListener("click", e => {
     if (e.target.classList.contains("close-modal-btn")) {
         taskBoxDialog.close();
+        return;
+    }
+
+    if (e.target.classList.contains("task-complete-status")) {
+        const { projectId, taskId } = e.target.closest("#view-task-modal").querySelector(".edit-btn").dataset;
+        toggleTaskCompleteStatus(projectId, taskId);
+        // Re-render the project to update the main view
+        renderSelectedProject(projectId);
         return;
     }
 

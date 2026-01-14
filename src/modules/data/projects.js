@@ -76,6 +76,14 @@ function removeTask(projectID, taskID) {
     }
 }
 
+function toggleTaskCompleteStatus(projectID, taskID) {
+    const project = projectList.find(proj => proj.id === projectID);
+    if (project) {
+        const task = project.taskList.find(task => task.id === taskID);
+        if (task) task.toggleCompleted();
+    }
+}
+
 seedDefaultProjects();
 
-export { projectList, createProject, removeProject, createTask, removeTask };
+export { projectList, createProject, removeProject, createTask, removeTask, toggleTaskCompleteStatus };

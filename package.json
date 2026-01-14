@@ -1,17 +1,19 @@
 {
-  "name": "webpack-template",
+  "name": "todo-list-app",
   "version": "1.0.0",
-  "description": "Reusable JavaScript project template using webpack",
+  "description": "A project-based task management app",
   "main": "./src/index.js",
   "scripts": {
     "build": "webpack",
     "dev": "webpack serve"
   },
   "keywords": [
-    "webpack",
-    "template",
     "javascript",
-    "starter"
+    "todo",
+    "task-manager",
+    "projects",
+    "webpack",
+    "date-fns"
   ],
   "author": "nishadnp",
   "license": "ISC",

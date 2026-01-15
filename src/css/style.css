@@ -248,7 +248,15 @@ dialog::backdrop {
 #save-task-btn { 
     background-color: var(--add-button-bg); 
     color: var(--add-button-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    border-radius: 4px;
 }
+
 #save-task-btn:hover { 
     background-color: var(--add-button-hover-bg); 
 }

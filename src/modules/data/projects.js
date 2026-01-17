@@ -1,6 +1,26 @@
-// ./src/projects.js
+// ./src/modules/data/projects.js
+//
+// Central data module for projects and tasks.
+// - Owns application data (Project / Task)
+// - Handles persistence via localStorage
+// - Exposes a simple API to the DOM layer
+//
 
-// Project class to represent individual projects
+
+// ============================================================================
+// Imports
+// ============================================================================
+
+import { saveProjects, loadProjects } from "./storage.js";
+
+
+// ============================================================================
+// Data Models
+// ============================================================================
+
+/**
+ * Represents a single project.
+ */
 class Project {
     constructor(name) {
         this.name = name;
@@ -9,7 +29,9 @@ class Project {
     }
 }
 
-// Task class to represent individual tasks within a project
+/**
+ * Represents a single task belonging to a project.
+ */
 class Task {
     constructor(projectID, title, description, dueDate, priority) {
         this.projectID = projectID;
@@ -25,11 +47,26 @@ class Task {
     }
 }
 
-// Array to hold all the projects
-const projectList = [
-    new Project("Inbox")
-];
 
+// ============================================================================
+// Application State
+// ============================================================================
+
+/**
+ * In-memory source of truth for all projects.
+ * Reassigned during initialization (rehydration or seeding).
+ */
+let projectList = [];
+
+
+// ============================================================================
+// Seed Data (First-time users only)
+// ============================================================================
+
+/**
+ * Populate the Inbox project with starter tasks.
+ * Runs only when no localStorage data exists.
+ */
 function seedDefaultProjects() {
     const inboxProject = projectList[0];
 
@@ -46,26 +83,45 @@ function seedDefaultProjects() {
 }
 
 
-// Functions to manage projects and tasks
+// ============================================================================
+// CRUD Operations (Public API)
+// ============================================================================
 
+/**
+ * Create a new project.
+ */
 function createProject(projectName) {
     projectList.push(new Project(projectName));
+    saveProjects(projectList);
 }
 
+/**
+ * Remove a project by ID.
+ */
 function removeProject(projectID) {
     const projectIndex = projectList.findIndex(proj => proj.id === projectID);
     if (projectIndex !== -1) {
         projectList.splice(projectIndex, 1);
     }
+    saveProjects(projectList);
+
 }
 
+/**
+ * Create a new task inside a project.
+ */
 function createTask(projectID, title, description, dueDate, priority) {
     const project = projectList.find(proj => proj.id === projectID);
     if (project) {
         project.taskList.push(new Task(projectID, title, description, dueDate, priority));
     }
+    saveProjects(projectList);
+
 }
 
+/**
+ * Remove a task from a project.
+ */
 function removeTask(projectID, taskID) {
     const project = projectList.find(proj => proj.id === projectID);
     if (project) {
@@ -74,8 +130,13 @@ function removeTask(projectID, taskID) {
             project.taskList.splice(taskIndex, 1);
         }
     }
+    saveProjects(projectList);
+
 }
 
+/**
+ * Toggle a task's completed state.
+ */
 function toggleTaskCompleteStatus(projectID, taskID) {
     const project = projectList.find(proj => proj.id === projectID);
     if (project) {
@@ -84,6 +145,65 @@ function toggleTaskCompleteStatus(projectID, taskID) {
     }
 }
 
-seedDefaultProjects();
 
-export { projectList, createProject, removeProject, createTask, removeTask, toggleTaskCompleteStatus };
+// ============================================================================
+// Persistence & Rehydration
+// ============================================================================
+
+/**
+ * Convert plain objects from localStorage back into
+ * Project and Task class instances.
+ */
+function rehydrateProjects(rawProjects) {
+    return rawProjects.map(rawProject => {
+        const project = new Project(rawProject.name);
+        project.id = rawProject.id;
+
+        project.taskList = rawProject.taskList.map(rawTask => {
+            const task = new Task(
+                rawTask.projectID,
+                rawTask.title,
+                rawTask.description,
+                rawTask.dueDate,
+                rawTask.priority
+            );
+            task.id = rawTask.id;
+            task.completed = rawTask.completed;
+            return task;
+        });
+
+        return project;
+    });
+}
+
+
+// ============================================================================
+// Initialization
+// ============================================================================
+
+const storedProjects = loadProjects();
+
+if (storedProjects) {
+    // Restore previous session
+    projectList = rehydrateProjects(storedProjects);
+}
+else {
+    // First-time user setup
+    projectList = [new Project("Inbox")];
+    seedDefaultProjects();
+    saveProjects(projectList);
+}
+
+
+// ============================================================================
+// Exports
+// ============================================================================
+
+export { 
+    projectList, 
+    createProject, 
+    removeProject, 
+    createTask, 
+    removeTask, 
+    toggleTaskCompleteStatus 
+};

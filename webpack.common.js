@@ -8,6 +8,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     clean: true, // clean dist folder before each build
+    publicPath: "/todo-list/",
     filename: "bundle.js", // default, can be overridden in prod
   },
   module: {

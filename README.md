@@ -59,7 +59,6 @@ src/
    ├── index.js     # App entry point
    └── modules
        ├── data/    # Project, task and storage logic
-
        └── dom/     # DOM rendering and event handling
 ```
 
